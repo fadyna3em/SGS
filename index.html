@@ -57,7 +57,7 @@ main>*,.box{animation:fd .45s backwards}.tile{animation:pop .5s backwards}.rk i{
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style><script>
 /* ===== اربط قاعدة البيانات هنا: رابط Firebase Realtime Database ===== */
-const FB_URL='';
+const FB_URL='https://fsgs-ae68b-default-rtdb.firebaseio.com';
 /* ================================================================== */
 const TEAMS=['كشاف','متقدم','مرشدات','رائدات','مرشحين جواله'],ICON={'كشاف':'⚜️','متقدم':'🧭','مرشدات':'🌿','رائدات':'🌟','مرشحين جواله':'🎒'};
 const LV=['ضعيف','متوسط','جيد','جيد جدًا','ممتاز'],LV2=[...LV,'مفيش','لا يوجد إجتماع'],WN=['الأولى','الثانية','الثالثة','الرابعة','الخامسة'];
@@ -74,7 +74,7 @@ c3:[D,{k:'mon',l:'تقييم شهر رقم',t:'n'},{k:'srv',l:'اسم الخاد
 c4:[D,{k:'srv',l:'اسم الخادم',t:'S1'},...TR.map((x,i)=>sel('t'+i,x,LV,1)),sel('ov','مستوى الاجتماع بشكل عام',LV,1),sel('mn','مستوى الخدام هذا الشهر',LV,1),...IT.map((x,i)=>sel('i'+i,x,LV,1))]};
 const DEF=[['c1','كشاف','1234','كشاف'],['c1','متقدم','5678','متقدم'],['c1','مرشدات','7410','مرشدات'],['c1','رائدات','8520','رائدات'],['c1','مرشحين جواله','9630','مرشحين جواله'],['c3','SGS','SGS','*',1],['c4','SGS','SGS','*',1]];
 /* ---------- البيانات والمزامنة ---------- */
-const FB_KEY='';
+const FB_KEY='AIzaSyAiA2tOrPV-3cLu199ZQEeLHG0W_vsUOQk';
 let FB=(localStorage.getItem('sgs_fb')||FB_URL).trim().replace(/\/$/,''),KEY=(localStorage.getItem('sgs_key')||FB_KEY).trim(),ON=false,SK='sgs3',TOK=null,RT=null,UID=null,EXP=0,LH='';
 function norm(d){d=d||{};d.recs=d.recs||{};['c1','c2','c3','c4'].forEach(k=>d.recs[k]=d.recs[k]||{});['names','profiles','log','cfg'].forEach(k=>d[k]=d[k]||{});d.cfg.color=d.cfg.color||'#0b3d6e';return d}
 let DB;try{DB=norm(JSON.parse(localStorage.getItem(SK)))}catch(x){DB=norm()}
@@ -101,7 +101,7 @@ function cop(d){const rd=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getD
 function tick(){const d=new Date();$('#clk').innerHTML='🕒 '+d.toLocaleTimeString('ar-EG')+' &nbsp;|&nbsp; 📅 '+d.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' &nbsp;|&nbsp; ✝ '+cop(d)+' (قبطي)'}
 tick();setInterval(tick,1000);
 /* ---------- الدخول ---------- */
-function home(){S={};TOK=RT=null;LH='';DB=norm();st();app.innerHTML='<div class=grid>'+Object.entries(CARDS).map(([k,c])=>`<div class=card onclick="login('${k}')"><div class=ic>${c.i}</div><h3>${c.n}</h3></div>`).join('')+'</div><div style="text-align:center"><button class=g onclick="setup()">🛠 إعداد أول مرة</button></div>'+((!FB||!KEY)?`<div class=box><h3>🔗 ربط قاعدة البيانات</h3><input id=cu placeholder="رابط Realtime Database"><input id=ck placeholder="Web API Key"><button onclick="saveCfg()">حفظ</button></div>`:'')}
+function home(){S={};TOK=RT=null;LH='';DB=norm();st();app.innerHTML='<div class=grid>'+Object.entries(CARDS).map(([k,c])=>`<div class=card onclick="login('${k}')"><div class=ic>${c.i}</div><h3>${c.n}</h3></div>`).join('')+'</div><div style="text-align:center"><button class=g onclick="setup()">🛠 إعداد أول مرة</button></div>'+((1)?`<div class=box><h3>🔗 ربط قاعدة البيانات</h3><input id=cu placeholder="رابط Realtime Database"><input id=ck placeholder="Web API Key"><button onclick="saveCfg()">حفظ</button></div>`:'')}
 function saveCfg(){localStorage.setItem('sgs_fb',$('#cu').value.trim());localStorage.setItem('sgs_key',$('#ck').value.trim());location.reload()}
 function login(k){const c=CARDS[k];app.innerHTML=`<div class=box><h2>${c.i} ${c.n}</h2><input id=u placeholder="اسم المستخدم"><input id=p type=password placeholder="كلمة المرور"><input id=nm placeholder="الاسم الثنائي (الاسم الأول + الأخير) - لو مطلوب"><button onclick="go('${k}')">دخول</button><button class=g onclick="home()">رجوع</button><p id=er class=er></p></div>`}
 async function go(k){const u=$('#u').value.trim(),p=$('#p').value.trim(),nm=$('#nm').value.trim();if(!u||!p)return;$('#er').textContent='⏳ جاري الدخول...';
