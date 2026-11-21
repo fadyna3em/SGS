@@ -1,0 +1,40 @@
+{
+ "rules": {
+  "sgs": {
+   ".read": "auth!=null&&root.child('sgs/profiles/'+auth.uid).exists()",
+   ".write": "auth!=null&&root.child('sgs/profiles/'+auth.uid).child('role').val()==='admin'",
+   "index": {
+    ".read": true,
+    "$k": {
+     ".write": "auth!=null&&root.child('sgs/profiles/'+auth.uid).child('role').val()==='admin'"
+    }
+   },
+   "profiles": {
+    "$u": {
+     ".write": "auth!=null&&(!root.child('sgs/profiles').exists()||root.child('sgs/profiles/'+auth.uid).child('role').val()==='admin')"
+    }
+   },
+   "cfg": {
+    ".write": "auth!=null&&root.child('sgs/profiles/'+auth.uid).child('role').val()==='admin'"
+   },
+   "names": {
+    "$i": {
+     ".write": "auth!=null&&root.child('sgs/profiles/'+auth.uid).exists()&&(!data.exists()||root.child('sgs/profiles/'+auth.uid).child('role').val()==='admin')"
+    }
+   },
+   "log": {
+    "$i": {
+     ".write": "auth!=null&&root.child('sgs/profiles/'+auth.uid).exists()&&(!data.exists()||root.child('sgs/profiles/'+auth.uid).child('role').val()==='admin')"
+    }
+   },
+   "recs": {
+    "$k": {
+     ".write": "auth!=null&&root.child('sgs/profiles/'+auth.uid).child('role').val()==='admin'",
+     "$i": {
+      ".write": "auth!=null&&root.child('sgs/profiles/'+auth.uid).exists()&&(!data.exists()&&newData.child('uid').val()===auth.uid||data.child('uid').val()===auth.uid&&newData.exists()&&root.child('sgs/profiles/'+auth.uid).child('e').val()==1||data.child('uid').val()===auth.uid&&!newData.exists()&&root.child('sgs/profiles/'+auth.uid).child('d').val()==1)"
+     }
+    }
+   }
+  }
+ }
+}
