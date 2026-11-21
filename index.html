@@ -121,11 +121,11 @@ function home(){S={};TOK=RT=null;LH='';DB=norm();st();app.innerHTML='<div class=
 function saveCfg(){localStorage.setItem('sgs_fb',$('#cu').value.trim());localStorage.setItem('sgs_key',$('#ck').value.trim());location.reload()}
 function login(k){const c=CARDS[k];app.innerHTML=`<div class=box><h2>${c.i} ${c.n}</h2><input id=u placeholder="اسم المستخدم"><input id=p type=password placeholder="كلمة المرور"><input id=nm placeholder="الاسم الثنائي (الاسم الأول + الأخير) - لو مطلوب"><button onclick="go('${k}')">دخول</button><button class=g onclick="home()">رجوع</button><p id=er class=er></p></div>`}
 async function go(k){const u=$('#u').value.trim(),p=$('#p').value.trim(),nm=$('#nm').value.trim();if(!u||!p)return;$('#er').textContent='⏳ جاري الدخول...';
-try{if(!FB||!KEY)throw 0;let r=await pub('index/'+k+'_'+hx(u)),em=r&&r.email;if(!em){r=await pub('index/admin_'+hx(u));em=r&&r.email}if(!em)throw 0;
-setS(await idp('signInWithPassword',{email:em,password:PW(p),returnSecureToken:true}));const U=await api('GET','profiles/'+UID);if(!U||(U.role!='admin'&&U.card!=k))throw 0;
+try{if(!FB||!KEY)throw 'لم يتم ربط القاعدة';let r=await pub('index/'+k+'_'+hx(u)),em=r&&r.email;if(!em){r=await pub('index/admin_'+hx(u));em=r&&r.email}if(!em)throw 'اسم المستخدم غير موجود';
+setS(await idp('signInWithPassword',{email:em,password:PW(p),returnSecureToken:true}));const U=await api('GET','profiles/'+UID);if(!U)throw 'الحساب موجود لكن بدون ملف صلاحيات';if(U.role!='admin'&&U.card!=k)throw 'هذا المستخدم غير مسموح له بهذا الكارت';
 const ad=U.role=='admin';if(U.ask&&!ad&&nm.split(/\s+/).length<2){TOK=null;return $('#er').textContent='اكتب الاسم الثنائي: الاسم الأول + الأخير'}
 S={k,u:U,uid:UID,admin:ad,by:ad?(U.n=='FADY'?'الأدمن':U.n):(U.ask?nm:U.n),teams:U.sc=='*'?TEAMS:[U.sc],tab:ad?'dash':(U.sc=='*'?TEAMS[0]:U.sc)};
-await pull();lg('دخول إلى '+CARDS[k].n);view()}catch(x){TOK=null;$('#er').textContent='بيانات الدخول غير صحيحة أو لا يوجد اتصال'}}
+await pull();lg('دخول إلى '+CARDS[k].n);view()}catch(x){TOK=null;const m=typeof x=='string'?x:(x&&x.message)||'';$('#er').textContent=/INVALID_LOGIN|INVALID_PASSWORD|EMAIL_NOT_FOUND/.test(m)?'كلمة المرور غير صحيحة':/referer|REFERRER|API_KEY|blocked/i.test(m)?'⛔ المفتاح (API Key) مقيّد ولا يسمح بهذا الموقع: '+m:m?'تعذر الدخول: '+m:'تعذر الدخول، تأكد من الاتصال بالإنترنت'}}
 function setup(){app.innerHTML=`<div class=box><h2>🛠 إعداد أول مرة</h2><p>إنشاء حساب الأدمن FADY. يتم مرة واحدة فقط عند تشغيل النظام لأول مرة.</p><input id=sp type=password placeholder="كلمة مرور الأدمن"><button onclick="doSetup()">إنشاء</button><button class=g onclick="home()">رجوع</button><p id=er class=er></p></div>`}
 async function doSetup(){const p=$('#sp').value.trim();if(p.length<4||!FB||!KEY)return $('#er').textContent='اكتب كلمة مرور (٤ أحرف على الأقل) وتأكد من ربط القاعدة';
 try{const em='admin.'+hx('FADY')+'.'+rnd()+'@sgs.app';setS(await idp('signUp',{email:em,password:PW(p),returnSecureToken:true}));
