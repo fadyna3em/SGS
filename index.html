@@ -108,7 +108,7 @@ const put=(p,v)=>{setP(p,v);return v===null?api('DELETE',p):api('PUT',p,v)};
 
 async function pull(){if(!FB||!TOK)return;const d=await api('GET','');if(!ON||d===undefined)return;const h=JSON.stringify(d);if(h==LH)return;LH=h;DB=norm(d);theme();live()}
 function theme(){document.documentElement.style.setProperty('--p',DB.cfg.color);$('#ttl').textContent=DB.cfg.title||'تقييمات الكشافه SGS';if(DB.cfg.logo)$('#lg').src=DB.cfg.logo}
-function live(){if(!S.k)return;if(S.tab=='dash')dash();else if(S.tab=='log')logv();else if($('#tb')&&!S.edit)$('#tb').innerHTML=tbl(S.tab)}
+function live(){if(!S.k||!$('#mn'))return;if(S.tab=='dash')dash();else if(S.tab=='log')logv();else if($('#tb')&&!S.edit)$('#tb').innerHTML=tbl(S.tab)}
 const lg=a=>put('log/'+Date.now(),{w:S.by||'-',a,t:new Date().toLocaleString('ar-EG')});
 let S={};
 /* ---------- الوقت والتاريخ القبطي ---------- */
